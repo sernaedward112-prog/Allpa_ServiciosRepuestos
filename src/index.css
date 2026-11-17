@@ -1,0 +1,125 @@
+@import "tailwindcss";
+
+@theme {
+  --font-display: "Outfit", ui-sans-serif, system-ui, sans-serif;
+  --font-sans: "Plus Jakarta Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+}
+
+@layer base {
+  :root {
+    --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+    --ease-drawer: cubic-bezier(0.32, 0.72, 0, 1);
+  }
+
+  html {
+    scroll-behavior: smooth;
+    font-family: var(--font-sans);
+    /* Celular: sin destello al tocar ni texto inflado en horizontal */
+    -webkit-tap-highlight-color: transparent;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  /* Toque inmediato y sin selección de texto en botones */
+  button,
+  a,
+  [role='button'],
+  [role='radio'] {
+    touch-action: manipulation;
+  }
+
+  button,
+  [role='button'] {
+    -webkit-user-select: none;
+    user-select: none;
+  }
+
+  h1, h2, h3, .font-display {
+    font-family: var(--font-display);
+  }
+
+  .tabular-nums {
+    font-variant-numeric: tabular-nums;
+  }
+}
+
+/* Fuera de @layer para ganar a text-xs / text-sm. Con menos de 16 px, iOS hace zoom al tocar un campo. */
+@media (pointer: coarse) {
+  input:not([type='checkbox']):not([type='radio']):not([type='range']),
+  textarea,
+  select {
+    font-size: 16px;
+  }
+
+  /* Zona de toque ampliada en botones pequeños */
+  .hit-area:not(.absolute):not(.fixed):not(.sticky),
+  .hit-area-lg:not(.absolute):not(.fixed):not(.sticky) {
+    position: relative;
+  }
+  .hit-area::after,
+  .hit-area-lg::after {
+    content: '';
+    position: absolute;
+  }
+  .hit-area::after {
+    inset: -8px -4px;
+  }
+  .hit-area-lg::after {
+    inset: -12px;
+  }
+}
+
+/* Botón presionado */
+button:not(:disabled):active,
+[role='radio']:active {
+  transform: scale(0.97);
+}
+
+@keyframes allpa-fade-in {
+  from {
+    opacity: 0;
+  }
+}
+@keyframes allpa-pop-in {
+  from {
+    opacity: 0;
+    transform: scale(0.96);
+  }
+}
+@keyframes allpa-drawer-in {
+  from {
+    transform: translateX(100%);
+  }
+}
+@keyframes allpa-sheet-in {
+  from {
+    transform: translateY(24px);
+    opacity: 0;
+  }
+}
+
+/* Animaciones de entrada */
+.anim-fade {
+  animation: allpa-fade-in 200ms var(--ease-out) both;
+}
+.anim-pop {
+  animation: allpa-pop-in 200ms var(--ease-out) both;
+}
+.anim-drawer {
+  animation: allpa-drawer-in 320ms var(--ease-drawer) both;
+}
+.anim-sheet {
+  animation: allpa-sheet-in 260ms var(--ease-out) both;
+}
+
+/* Menos movimiento si el sistema lo pide */
+@media (prefers-reduced-motion: reduce) {
+  .anim-pop,
+  .anim-drawer,
+  .anim-sheet {
+    animation: allpa-fade-in 150ms ease both;
+  }
+  html {
+    scroll-behavior: auto;
+  }
+}
